@@ -40,14 +40,8 @@ var moveScale              : float = 1.0;
 /* print() styles */
 var style : GUIStyle;
 
-/* Sound stuff */
-var jumpSounds : AudioClip[];
-
 /* FPS Stuff */
 var fpsDisplayRate = 4.0;  // 4 updates per sec.
-
-/* Prefabs */
-var gibEffectPrefab : GameObject;
 
 
 
@@ -318,7 +312,6 @@ function GroundMove()
 	{
 		playerVelocity.y = jumpSpeed;
 		wishJump = false;
-		PlayJumpSound();
 	}
 }
 
@@ -422,25 +415,12 @@ function CmdScale()
 	return scale;
 }
 
-
-/**
- * Plays a random jump sound
- */
-function PlayJumpSound()
-{
-	// Don't play a new sound while the last hasn't finished
-	if(audio.isPlaying)
-		return;
-	audio.clip = jumpSounds[Random.Range(0, jumpSounds.length)];
-	audio.Play();
-}
-
 function PlayerExplode()
 {
-	var velocity = controller.velocity;
-	velocity.Normalize();
-	var gibEffect = Instantiate(gibEffectPrefab, transform.position, Quaternion.identity);
-	gibEffect.GetComponent(GibFX).Explode(transform.position, velocity, controller.velocity.magnitude);
+	//var velocity = controller.velocity;
+	//velocity.Normalize();
+	//var gibEffect = Instantiate(gibEffectPrefab, transform.position, Quaternion.identity);
+	//gibEffect.GetComponent(GibFX).Explode(transform.position, velocity, controller.velocity.magnitude);
 	isDead = true;
 }
 
