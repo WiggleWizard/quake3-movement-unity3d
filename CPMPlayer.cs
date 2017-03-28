@@ -58,9 +58,6 @@ public class GMSPlayer : MonoBehaviour
     /*print() style */
     public GUIStyle style;
 
-    /* Sound stuff */
-    public AudioClip[] jumpSounds;
-
     /*FPS Stuff */
     public float fpsDisplayRate = 4.0f; // 4 updates per sec
 
@@ -301,7 +298,6 @@ public class GMSPlayer : MonoBehaviour
         {
             playerVelocity.y = jumpSpeed;
             wishJump = false;
-            PlayJumpSound();
         }
     }
 
@@ -392,16 +388,5 @@ public class GMSPlayer : MonoBehaviour
         scale = moveSpeed * max / (moveScale * total);
 
         return scale;
-    }
-    /**
-     * Plays a random jump sound
-     */
-    private void PlayJumpSound()
-    {
-        // Don't play a new sound while the last hasn't finished
-        if(GetComponent<AudioSource>().isPlaying)
-        return;
-        GetComponent<AudioSource>().clip = jumpSounds[Random.Range(0, jumpSounds.Length)];
-        GetComponent<AudioSource>().Play();
     }
 }
