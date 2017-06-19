@@ -380,7 +380,7 @@ public class GMSPlayer : MonoBehaviour
 
         max = (int)Mathf.Abs(_cmd.forwardMove);
         if(Mathf.Abs(_cmd.rightMove) > max)
-            max = (int)Mathf.Abs(_cmd.forwardMove);
+            max = (int)Mathf.Abs(_cmd.rightMove);
         if(max <= 0)
             return 0;
 
