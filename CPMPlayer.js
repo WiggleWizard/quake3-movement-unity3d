@@ -134,10 +134,6 @@ function Update()
 	this.transform.rotation = Quaternion.Euler(0, rotY, 0); // Rotates the collider
 	playerView.rotation     = Quaternion.Euler(rotX, rotY, 0); // Rotates the camera
 
-	// Set the camera's position to the transform
-	playerView.position = this.transform.position;
-	playerView.position.y = this.transform.position.y + playerViewYOffset;
-
 	/* Movement, here's the important part */
 	QueueJump();
 	if(controller.isGrounded)
@@ -147,6 +143,11 @@ function Update()
 
 	// Move the controller
 	controller.Move(playerVelocity * Time.deltaTime);
+
+    //Need to move the camera after the player has been moved because otherwise the camera will clip the player if going fast enough and will always be 1 frame behind.
+    // Set the camera's position to the transform
+	playerView.position = this.transform.position;
+	playerView.position.y = this.transform.position.y + playerViewYOffset;
 
 	/* Calculate top velocity */
 	var udp = playerVelocity;
