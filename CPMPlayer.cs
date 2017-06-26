@@ -130,11 +130,7 @@ public class GMSPlayer : MonoBehaviour
         this.transform.rotation = Quaternion.Euler(0, rotY, 0); // Rotates the collider
         playerView.rotation     = Quaternion.Euler(rotX, rotY, 0); // Rotates the camera
 
-        // Set the camera's position to the transform
-        playerView.position = new Vector3(
-            transform.position.x,
-            transform.position.y + playerViewYOffset,
-            transform.position.z);
+        
 
         /* Movement, here's the important part */
         QueueJump();
@@ -151,6 +147,13 @@ public class GMSPlayer : MonoBehaviour
         udp.y = 0.0f;
         if(playerVelocity.magnitude > playerTopVelocity)
             playerTopVelocity = playerVelocity.magnitude;
+
+        //Need to move the camera after the player has been moved because otherwise the camera will clip the player if going fast enough and will always be 1 frame behind.
+        // Set the camera's position to the transform
+        playerView.position = new Vector3(
+            transform.position.x,
+            transform.position.y + playerViewYOffset,
+            transform.position.z);
     }
 
      /*******************************************************************************************************\
