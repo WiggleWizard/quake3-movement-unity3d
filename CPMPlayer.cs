@@ -119,7 +119,7 @@ public class GMSPlayer : MonoBehaviour
                  }
         /* Ensure that the cursor is locked into the screen */
         if (Cursor.lockState != CursorLockMode.Locked) {
-            if (Input.GetButtonDown("Fire 1"))
+            if (Input.GetButtonDown("Fire1"))
                 Cursor.lockState = CursorLockMode.Locked;
         }
 
