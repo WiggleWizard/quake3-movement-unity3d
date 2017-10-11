@@ -1,4 +1,11 @@
-﻿/**
+﻿/*
+ * - Edited by PrzemyslawNowaczyk (11.10.17)
+ *   -----------------------------
+ *   Deleting unused variables
+ *   Changing obsolete methods
+ *   Changing used input methods for consistency
+ *   -----------------------------
+ *
  * - Edited by NovaSurfer (31.01.17).
  *   -----------------------------
  *   Rewriting from JS to C#
