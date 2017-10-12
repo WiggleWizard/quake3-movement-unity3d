@@ -1,4 +1,11 @@
-﻿/**
+﻿/*
+ * - Edited by PrzemyslawNowaczyk (11.10.17)
+ *   -----------------------------
+ *   Deleting unused variables
+ *   Changing obsolete methods
+ *   Changing used input methods for consistency
+ *   -----------------------------
+ *
  * - Edited by NovaSurfer (31.01.17).
  *   -----------------------------
  *   Rewriting from JS to C#
@@ -88,7 +95,7 @@ public class GMSPlayer : MonoBehaviour
     {
         // Hide the cursor
         Cursor.visible = false;
-        Screen.lockCursor = true;
+        Cursor.lockState = CursorLockMode.Locked;
 
         // Put the camera inside the capsule collider
         playerView.position = new Vector3(
@@ -111,15 +118,14 @@ public class GMSPlayer : MonoBehaviour
             dt -= 1.0f / fpsDisplayRate;
                  }
         /* Ensure that the cursor is locked into the screen */
-        if(Screen.lockCursor == false)
-        {
-            if(Input.GetMouseButtonDown(0))
-                Screen.lockCursor = true;
+        if (Cursor.lockState != CursorLockMode.Locked) {
+            if (Input.GetButtonDown("Fire1"))
+                Cursor.lockState = CursorLockMode.Locked;
         }
 
         /* Camera rotation stuff, mouse controls this shit */
-        rotX -= Input.GetAxis("Mouse Y") * xMouseSensitivity * 0.02f;
-        rotY += Input.GetAxis("Mouse X") * yMouseSensitivity * 0.02f;
+        rotX -= Input.GetAxisRaw("Mouse Y") * xMouseSensitivity * 0.02f;
+        rotY += Input.GetAxisRaw("Mouse X") * yMouseSensitivity * 0.02f;
 
         // Clamp the X rotation
         if(rotX < -90)
@@ -165,8 +171,8 @@ public class GMSPlayer : MonoBehaviour
      */
     private void SetMovementDir()
     {
-        _cmd.forwardMove = Input.GetAxis("Vertical");
-        _cmd.rightMove   = Input.GetAxis("Horizontal");
+        _cmd.forwardMove = Input.GetAxisRaw("Vertical");
+        _cmd.rightMove   = Input.GetAxisRaw("Horizontal");
     }
 
     /**
@@ -174,9 +180,9 @@ public class GMSPlayer : MonoBehaviour
      */
     private void QueueJump()
     {
-        if(Input.GetKeyDown(KeyCode.Space) && !wishJump)
+        if(Input.GetButtonDown("Jump") && !wishJump)
             wishJump = true;
-        if(Input.GetKeyUp(KeyCode.Space))
+        if(Input.GetButtonUp("Jump"))
             wishJump = false;
     }
 
@@ -237,7 +243,6 @@ public class GMSPlayer : MonoBehaviour
         float speed;
         float dot;
         float k;
-        int i;
 
         // Can't control movement if not moving forward or backward
         if(Mathf.Abs(_cmd.forwardMove) < 0.001 || Mathf.Abs(wishspeed) < 0.001)
@@ -274,7 +279,6 @@ public class GMSPlayer : MonoBehaviour
     private void GroundMove()
     {
         Vector3 wishdir;
-        Vector3 wishvel;
 
         // Do not apply friction if the player is queueing up the next jump
         if (!wishJump)
@@ -310,7 +314,6 @@ public class GMSPlayer : MonoBehaviour
     private void ApplyFriction(float t)
     {
         Vector3 vec = playerVelocity; // Equivalent to: VectorCopy();
-        float vel;
         float speed;
         float newspeed;
         float control;
@@ -335,7 +338,6 @@ public class GMSPlayer : MonoBehaviour
             newspeed /= speed;
 
         playerVelocity.x *= newspeed;
-        // playerVelocity.y *= newspeed;
         playerVelocity.z *= newspeed;
     }
 
