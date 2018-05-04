@@ -194,10 +194,9 @@ public class GMSPlayer : MonoBehaviour
         Vector3 wishdir;
         float wishvel = airAcceleration;
         float accel;
-
-        float scale = CmdScale();
-
+        
         SetMovementDir();
+        float scale = CmdScale();
 
         wishdir =  new Vector3(_cmd.rightMove, 0, _cmd.forwardMove);
         wishdir = transform.TransformDirection(wishdir);
@@ -286,6 +285,7 @@ public class GMSPlayer : MonoBehaviour
         else
             ApplyFriction(0);
 
+        SetMovementDir();
         float scale = CmdScale();
 
         wishdir = new Vector3(_cmd.rightMove, 0, _cmd.forwardMove);
@@ -299,7 +299,7 @@ public class GMSPlayer : MonoBehaviour
         Accelerate(wishdir, wishspeed, runAcceleration);
 
         // Reset the gravity velocity
-        playerVelocity.y = 0;
+        playerVelocity.y = -gravity * Time.deltaTime;
 
         if(wishJump)
         {
