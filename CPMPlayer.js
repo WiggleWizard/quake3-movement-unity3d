@@ -87,8 +87,8 @@ private var playerSpawnRot : Quaternion;
 function Start()
 {
 	/* Hide the cursor */
-	Screen.showCursor = false;
-	Screen.lockCursor = true;
+	Cursor.visible = false;
+    Cursor.lockState = CursorLockMode.Locked;
 
 	/* Put the camera inside the capsule collider */
 	playerView.position = this.transform.position;
@@ -115,10 +115,10 @@ function Update()
 	}
 
 	/* Ensure that the cursor is locked into the screen */
-	if(Screen.lockCursor == false)
+	if(Cursor.lockState != CursorLockMode.Locked)
 	{
 		if(Input.GetMouseButtonDown(0))
-			Screen.lockCursor = true;
+            Cursor.lockState = CursorLockMode.Locked;
 	}
 
 	/* Camera rotation stuff, mouse controls this shit */
