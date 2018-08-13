@@ -35,6 +35,7 @@ var airControl             : float = 0.3;  // How precise air control is
 var sideStrafeAcceleration : float = 50;   // How fast acceleration occurs to get up to sideStrafeSpeed when side strafing
 var sideStrafeSpeed        : float = 1;    // What the max speed to generate when side strafing
 var jumpSpeed              : float = 8.0;  // The speed at which the character's up axis gains when hitting jump
+var holdJumpToBhop         : boolean = false; // When enabled allows player to just hold jump button to keep on bhopping perfectly. Beware: smells like casual.
 
 /* print() styles */
 var style : GUIStyle;
@@ -179,6 +180,11 @@ function SetMovementDir()
  */
 function QueueJump()
 {
+    if(holdJumpToBhop) {
+        wishJump = Input.GetKey(KeyCode.Space);
+        return;
+    }
+
 	if(Input.GetKeyDown(KeyCode.Space) && !wishJump)
 		wishJump = true;
 	if(Input.GetKeyUp(KeyCode.Space))
