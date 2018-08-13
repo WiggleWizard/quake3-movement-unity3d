@@ -60,7 +60,6 @@ public class CPMPlayer : MonoBehaviour
     public float sideStrafeAcceleration = 50.0f;  // How fast acceleration occurs to get up to sideStrafeSpeed when
     public float sideStrafeSpeed = 1.0f;          // What the max speed to generate when side strafing
     public float jumpSpeed = 8.0f;                // The speed at which the character's up axis gains when hitting jump
-    public float moveScale = 1.0f;
 
     /*print() style */
     public GUIStyle style;
@@ -196,7 +195,6 @@ public class CPMPlayer : MonoBehaviour
         float accel;
         
         SetMovementDir();
-        float scale = CmdScale();
 
         wishdir =  new Vector3(_cmd.rightMove, 0, _cmd.forwardMove);
         wishdir = transform.TransformDirection(wishdir);
@@ -206,7 +204,6 @@ public class CPMPlayer : MonoBehaviour
 
         wishdir.Normalize();
         moveDirectionNorm = wishdir;
-        wishspeed *= scale;
 
         // CPM: Aircontrol
         float wishspeed2 = wishspeed;
@@ -286,7 +283,6 @@ public class CPMPlayer : MonoBehaviour
             ApplyFriction(0);
 
         SetMovementDir();
-        float scale = CmdScale();
 
         wishdir = new Vector3(_cmd.rightMove, 0, _cmd.forwardMove);
         wishdir = transform.TransformDirection(wishdir);
@@ -366,32 +362,5 @@ public class CPMPlayer : MonoBehaviour
         ups.y = 0;
         GUI.Label(new Rect(0, 15, 400, 100), "Speed: " + Mathf.Round(ups.magnitude * 100) / 100 + "ups", style);
         GUI.Label(new Rect(0, 30, 400, 100), "Top Speed: " + Mathf.Round(playerTopVelocity * 100) / 100 + "ups", style);
-    }
-
-    /*
-    ============
-    PM_CmdScale
-
-    Returns the scale factor to apply to cmd movements
-    This allows the clients to use axial -127 to 127 values for all directions
-    without getting a sqrt(2) distortion in speed.
-    ============
-    */
-    private float CmdScale()
-    {
-        int max;
-        float total;
-        float scale;
-
-        max = (int)Mathf.Abs(_cmd.forwardMove);
-        if(Mathf.Abs(_cmd.rightMove) > max)
-            max = (int)Mathf.Abs(_cmd.rightMove);
-        if(max <= 0)
-            return 0;
-
-        total = Mathf.Sqrt(_cmd.forwardMove * _cmd.forwardMove + _cmd.rightMove * _cmd.rightMove);
-        scale = moveSpeed * max / (moveScale * total);
-
-        return scale;
     }
 }
