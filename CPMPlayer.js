@@ -152,8 +152,8 @@ function Update()
 	/* Calculate top velocity */
 	var udp = playerVelocity;
 	udp.y = 0.0;
-	if(playerVelocity.magnitude > playerTopVelocity)
-		playerTopVelocity = playerVelocity.magnitude;
+	if(udp.magnitude > playerTopVelocity)
+		playerTopVelocity = udp.magnitude;
 
 	if(Input.GetKeyUp('x'))
 		PlayerExplode();
