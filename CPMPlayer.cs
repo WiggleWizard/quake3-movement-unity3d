@@ -38,7 +38,7 @@ struct Cmd
     public float upMove;
 }
 
-public class GMSPlayer : MonoBehaviour
+public class CPMPlayer : MonoBehaviour
 {
     public Transform playerView;     // Camera
     public float playerViewYOffset = 0.6f; // The height at which the camera is bound to
