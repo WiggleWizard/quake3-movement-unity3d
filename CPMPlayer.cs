@@ -150,8 +150,8 @@ public class CPMPlayer : MonoBehaviour
         /* Calculate top velocity */
         Vector3 udp = playerVelocity;
         udp.y = 0.0f;
-        if(playerVelocity.magnitude > playerTopVelocity)
-            playerTopVelocity = playerVelocity.magnitude;
+        if(udp.magnitude > playerTopVelocity)
+            playerTopVelocity = udp.magnitude;
 
         //Need to move the camera after the player has been moved because otherwise the camera will clip the player if going fast enough and will always be 1 frame behind.
         // Set the camera's position to the transform
