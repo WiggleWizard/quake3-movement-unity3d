@@ -35,7 +35,7 @@ var airControl             : float = 0.3;  // How precise air control is
 var sideStrafeAcceleration : float = 50;   // How fast acceleration occurs to get up to sideStrafeSpeed when side strafing
 var sideStrafeSpeed        : float = 1;    // What the max speed to generate when side strafing
 var jumpSpeed              : float = 8.0;  // The speed at which the character's up axis gains when hitting jump
-var moveScale              : float = 1.0;
+var holdJumpToBhop         : boolean = false; // When enabled allows player to just hold jump button to keep on bhopping perfectly. Beware: smells like casual.
 
 /* print() styles */
 var style : GUIStyle;
@@ -87,8 +87,8 @@ private var playerSpawnRot : Quaternion;
 function Start()
 {
 	/* Hide the cursor */
-	Screen.showCursor = false;
-	Screen.lockCursor = true;
+	Cursor.visible = false;
+    Cursor.lockState = CursorLockMode.Locked;
 
 	/* Put the camera inside the capsule collider */
 	playerView.position = this.transform.position;
@@ -115,10 +115,10 @@ function Update()
 	}
 
 	/* Ensure that the cursor is locked into the screen */
-	if(Screen.lockCursor == false)
+	if(Cursor.lockState != CursorLockMode.Locked)
 	{
 		if(Input.GetMouseButtonDown(0))
-			Screen.lockCursor = true;
+            Cursor.lockState = CursorLockMode.Locked;
 	}
 
 	/* Camera rotation stuff, mouse controls this shit */
@@ -152,8 +152,8 @@ function Update()
 	/* Calculate top velocity */
 	var udp = playerVelocity;
 	udp.y = 0.0;
-	if(playerVelocity.magnitude > playerTopVelocity)
-		playerTopVelocity = playerVelocity.magnitude;
+	if(udp.magnitude > playerTopVelocity)
+		playerTopVelocity = udp.magnitude;
 
 	if(Input.GetKeyUp('x'))
 		PlayerExplode();
@@ -180,6 +180,11 @@ function SetMovementDir()
  */
 function QueueJump()
 {
+    if(holdJumpToBhop) {
+        wishJump = Input.GetKey(KeyCode.Space);
+        return;
+    }
+
 	if(Input.GetKeyDown(KeyCode.Space) && !wishJump)
 		wishJump = true;
 	if(Input.GetKeyUp(KeyCode.Space))
@@ -195,8 +200,6 @@ function AirMove()
 	var wishvel : float = airAcceleration;
 	var accel : float;
 
-	var scale = CmdScale();
-
 	SetMovementDir();
 	
 	wishdir = Vector3(cmd.rightmove, 0, cmd.forwardmove);
@@ -207,7 +210,6 @@ function AirMove()
 	
 	wishdir.Normalize();
 	moveDirectionNorm = wishdir;
-	wishspeed *= scale;
 
 	// CPM: Aircontrol
 	var wishspeed2 = wishspeed;
@@ -291,8 +293,6 @@ function GroundMove()
 		ApplyFriction(1.0);
 	else
 		ApplyFriction(0);
-
-	var scale = CmdScale();
 
 	SetMovementDir();
 
@@ -389,32 +389,6 @@ function OnGUI()
 	GUI.Label(Rect(0, 30, 400, 100), "Top Speed: " + Mathf.Round(playerTopVelocity * 100) / 100 + "ups", style);
 }
 
-/*
-============
-PM_CmdScale
-
-Returns the scale factor to apply to cmd movements
-This allows the clients to use axial -127 to 127 values for all directions
-without getting a sqrt(2) distortion in speed.
-============
-*/
-function CmdScale()
-{
-	var max : int;
-	var total : float;
-	var scale : float;
-
-	max = Mathf.Abs(cmd.forwardmove);
-	if(Mathf.Abs(cmd.rightmove) > max)
-		max = Mathf.Abs(cmd.rightmove);
-	if(!max)
-		return 0;
-
-	total = Mathf.Sqrt(cmd.forwardmove * cmd.forwardmove + cmd.rightmove * cmd.rightmove);
-	scale = moveSpeed * max / (moveScale * total);
-
-	return scale;
-}
 
 function PlayerExplode()
 {

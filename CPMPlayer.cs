@@ -38,7 +38,7 @@ struct Cmd
     public float upMove;
 }
 
-public class GMSPlayer : MonoBehaviour
+public class CPMPlayer : MonoBehaviour
 {
     public Transform playerView;     // Camera
     public float playerViewYOffset = 0.6f; // The height at which the camera is bound to
@@ -60,7 +60,7 @@ public class GMSPlayer : MonoBehaviour
     public float sideStrafeAcceleration = 50.0f;  // How fast acceleration occurs to get up to sideStrafeSpeed when
     public float sideStrafeSpeed = 1.0f;          // What the max speed to generate when side strafing
     public float jumpSpeed = 8.0f;                // The speed at which the character's up axis gains when hitting jump
-    public float moveScale = 1.0f;
+    public bool holdJumpToBhop = false;           // When enabled allows player to just hold jump button to keep on bhopping perfectly. Beware: smells like casual.
 
     /*print() style */
     public GUIStyle style;
@@ -96,6 +96,13 @@ public class GMSPlayer : MonoBehaviour
         // Hide the cursor
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+
+        if (playerView == null)
+        {
+            Camera mainCamera = Camera.main;
+            if (mainCamera != null)
+                playerView = mainCamera.gameObject.transform;
+        }
 
         // Put the camera inside the capsule collider
         playerView.position = new Vector3(
@@ -151,8 +158,8 @@ public class GMSPlayer : MonoBehaviour
         /* Calculate top velocity */
         Vector3 udp = playerVelocity;
         udp.y = 0.0f;
-        if(playerVelocity.magnitude > playerTopVelocity)
-            playerTopVelocity = playerVelocity.magnitude;
+        if(udp.magnitude > playerTopVelocity)
+            playerTopVelocity = udp.magnitude;
 
         //Need to move the camera after the player has been moved because otherwise the camera will clip the player if going fast enough and will always be 1 frame behind.
         // Set the camera's position to the transform
@@ -180,6 +187,12 @@ public class GMSPlayer : MonoBehaviour
      */
     private void QueueJump()
     {
+        if(holdJumpToBhop)
+        {
+            wishJump = Input.GetButton("Jump");
+            return;
+        }
+
         if(Input.GetButtonDown("Jump") && !wishJump)
             wishJump = true;
         if(Input.GetButtonUp("Jump"))
@@ -196,7 +209,6 @@ public class GMSPlayer : MonoBehaviour
         float accel;
         
         SetMovementDir();
-        float scale = CmdScale();
 
         wishdir =  new Vector3(_cmd.rightMove, 0, _cmd.forwardMove);
         wishdir = transform.TransformDirection(wishdir);
@@ -206,7 +218,6 @@ public class GMSPlayer : MonoBehaviour
 
         wishdir.Normalize();
         moveDirectionNorm = wishdir;
-        wishspeed *= scale;
 
         // CPM: Aircontrol
         float wishspeed2 = wishspeed;
@@ -286,7 +297,6 @@ public class GMSPlayer : MonoBehaviour
             ApplyFriction(0);
 
         SetMovementDir();
-        float scale = CmdScale();
 
         wishdir = new Vector3(_cmd.rightMove, 0, _cmd.forwardMove);
         wishdir = transform.TransformDirection(wishdir);
@@ -366,32 +376,5 @@ public class GMSPlayer : MonoBehaviour
         ups.y = 0;
         GUI.Label(new Rect(0, 15, 400, 100), "Speed: " + Mathf.Round(ups.magnitude * 100) / 100 + "ups", style);
         GUI.Label(new Rect(0, 30, 400, 100), "Top Speed: " + Mathf.Round(playerTopVelocity * 100) / 100 + "ups", style);
-    }
-
-    /*
-    ============
-    PM_CmdScale
-
-    Returns the scale factor to apply to cmd movements
-    This allows the clients to use axial -127 to 127 values for all directions
-    without getting a sqrt(2) distortion in speed.
-    ============
-    */
-    private float CmdScale()
-    {
-        int max;
-        float total;
-        float scale;
-
-        max = (int)Mathf.Abs(_cmd.forwardMove);
-        if(Mathf.Abs(_cmd.rightMove) > max)
-            max = (int)Mathf.Abs(_cmd.rightMove);
-        if(max <= 0)
-            return 0;
-
-        total = Mathf.Sqrt(_cmd.forwardMove * _cmd.forwardMove + _cmd.rightMove * _cmd.rightMove);
-        scale = moveSpeed * max / (moveScale * total);
-
-        return scale;
     }
 }
