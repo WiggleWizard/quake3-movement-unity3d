@@ -1,0 +1,23 @@
+public class RocketExplosion : MonoBehaviour
+{
+    private float explosionRadius = 3f;
+    private Vector3 explosionOrigin;
+
+    private IEnumerator Start()
+    {
+    // Wait one frame before starting, to ensure all objects are affected
+        yield return null;
+        Collider[] objectsInRange = Physics.OverlapSphere(explosionOrigin, explosionRadius);
+
+        foreach (Collider collision in objectsInRange)
+        {
+          CPMPlayer player = collision.GetComponent<CPMPlayer>();
+          if (player != null)
+            {
+                // Apply knockback force to player if they are in explosion radius
+                player.Knockback(player.transform.position - explosionOrigin, explosionForce);
+            }
+         }
+     }
+ }
+            
