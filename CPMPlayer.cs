@@ -135,10 +135,7 @@ public class CPMPlayer : MonoBehaviour
         rotY += Input.GetAxisRaw("Mouse X") * yMouseSensitivity * 0.02f;
 
         // Clamp the X rotation
-        if(rotX < -90)
-            rotX = -90;
-        else if(rotX > 90)
-            rotX = 90;
+        rotX = Mathf.Clamp(rotX, -90f, 90f);
 
         this.transform.rotation = Quaternion.Euler(0, rotY, 0); // Rotates the collider
         playerView.rotation     = Quaternion.Euler(rotX, rotY, 0); // Rotates the camera
